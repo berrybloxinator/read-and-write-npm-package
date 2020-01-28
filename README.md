@@ -1,4 +1,4 @@
-#Getting Started
+# Getting Started
 
 Start by importing the constructor function
 
@@ -12,7 +12,7 @@ Next create a new instance of the constructor function with the path to the file
 const fileReader = new ReadAndWrite("./users.txt");
 ```
 
-#Reading From A File
+# Reading From A File
 
 The following line reads all records from the file
 
@@ -47,7 +47,7 @@ Example:
 
 ```
 
-#Appending Records
+# Appending Records
 
 To append records pass in an array of objects
 
@@ -85,7 +85,7 @@ users.push(...tempUsers);
 
 Appending records will not overwrite the file, only add to the end of it.
 
-#Writing Records
+# Writing Records
 
 Writing records is done almost the exact same way except for the fact that the file is overwritten
 
@@ -116,7 +116,7 @@ fileReader.writeRecords(users);
 users.push(...tempUsers);
 ```
 
-#Deleting Records
+# Deleting Records
 
 To delete a record you have to pass in an id
 
@@ -136,7 +136,7 @@ This will find the record with the key and value that you pass in
 
 It will remove it from the file and return an array with all of of the records except the one that was deleted
 
-#Editing Records
+# Editing Records
 
 This is the most complicated function in this package
 
@@ -191,7 +191,7 @@ to
 
 The edit record function will return an array with all of the records including the edited record
 
-##Notes
+## Notes
 
 Reading from and writing to files is always done synchronously in this package
 
