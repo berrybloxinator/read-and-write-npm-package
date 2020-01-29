@@ -66,7 +66,7 @@ function ReadAndWrite(filePath) {
 
     this.deleteRecordSync = function(id) {
         let recordsString = "";
-        const refactoredRecords = this.readAllRecordsSync(this.filePath).filter(record => {
+        const refactoredRecords = this.readAllRecordsSync().filter(record => {
             if (record[id.key] !== id.value) {
                 recordsString += `${JSON.stringify(record)}\n`;
             }
@@ -78,7 +78,7 @@ function ReadAndWrite(filePath) {
 
     this.deleteRecord = function(id, callback) {
         let recordsString = "";
-        this.readAllRecords(this.filePath, fileContents => {
+        this.readAllRecords(fileContents => {
             const refactoredRecords = fileContents.filter(record => {
                 if (record[id.key] !== id.value) {
                     recordsString += `${JSON.stringify(record)}\n`;
@@ -97,7 +97,7 @@ function ReadAndWrite(filePath) {
 
     this.editRecordSync = function(id, recordIdArray) {
         let recordsString = "";
-        const refactoredRecords = this.readAllRecordsSync(this.filePath).map(record => {
+        const refactoredRecords = this.readAllRecordsSync().map(record => {
             if (record[id.key] === id.value) {
                 for (let recordId of recordIdArray) {
                     record[recordId.key] = recordId.value;
@@ -112,7 +112,7 @@ function ReadAndWrite(filePath) {
 
     this.editRecord = function(id, recordIdArray, callback) {
         let recordsString = "";
-        this.readAllRecords(this.filePath, fileContents => {
+        this.readAllRecords(fileContents => {
             const refactoredRecords = fileContents.map(record => {
                 if (record[id.key] === id.value) {
                     for (let recordId of recordIdArray) {
