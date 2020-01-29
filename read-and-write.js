@@ -78,18 +78,20 @@ function ReadAndWrite(filePath) {
 
     this.deleteRecord = function(id, callback) {
         let recordsString = "";
-        const refactoredRecords = this.readAllRecordsSync(this.filePath).filter(record => {
-            if (record[id.key] !== id.value) {
-                recordsString += `${JSON.stringify(record)}\n`;
-            }
-            return record[id.key] !== id.value
-        });
-        fs.writeFile(this.filePath, recordsString, err => {
-            if (err) {
-                console.log(`Error ${err}`);
-            } else {
-                callback(refactoredRecords);
-            }
+        this.readAllRecords(this.filePath, fileContents => {
+            const refactoredRecords = fileContents.filter(record => {
+                if (record[id.key] !== id.value) {
+                    recordsString += `${JSON.stringify(record)}\n`;
+                }
+                return record[id.key] !== id.value
+            });
+            fs.writeFile(this.filePath, recordsString, err => {
+                if (err) {
+                    console.log(`Error ${err}`);
+                } else {
+                    callback(refactoredRecords);
+                }
+            });
         });
     };
 
@@ -101,7 +103,6 @@ function ReadAndWrite(filePath) {
                     record[recordId.key] = recordId.value;
                 }
             }
-
             recordsString += `${JSON.stringify(record)}\n`;
             return record;
         });
@@ -111,22 +112,23 @@ function ReadAndWrite(filePath) {
 
     this.editRecord = function(id, recordIdArray, callback) {
         let recordsString = "";
-        const refactoredRecords = this.readAllRecordsSync(this.filePath).map(record => {
-            if (record[id.key] === id.value) {
-                for (let recordId of recordIdArray) {
-                    record[recordId.key] = recordId.value;
+        this.readAllRecords(this.filePath, fileContents => {
+            const refactoredRecords = fileContents.map(record => {
+                if (record[id.key] === id.value) {
+                    for (let recordId of recordIdArray) {
+                        record[recordId.key] = recordId.value;
+                    }
                 }
-            }
-
-            recordsString += `${JSON.stringify(record)}\n`;
-            return record;
-        });
-        fs.writeFile(this.filePath, recordsString, err => {
-            if (err) {
-                console.log(`Error ${err}`);
-            } else {
-                callback(refactoredRecords);
-            }
+                recordsString += `${JSON.stringify(record)}\n`;
+                return record;
+            });
+            fs.writeFile(this.filePath, recordsString, err => {
+                if (err) {
+                    console.log(`Error ${err}`);
+                } else {
+                    callback(refactoredRecords);
+                }
+            });
         });
     };
 }
