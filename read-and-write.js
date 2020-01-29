@@ -66,7 +66,7 @@ function ReadAndWrite(filePath) {
 
     this.deleteRecordSync = function(id) {
         let recordsString = "";
-        const refactoredRecords = this.readAllRecords(this.filePath).filter(record => {
+        const refactoredRecords = this.readAllRecordsSync(this.filePath).filter(record => {
             if (record[id.key] !== id.value) {
                 recordsString += `${JSON.stringify(record)}\n`;
             }
@@ -78,7 +78,7 @@ function ReadAndWrite(filePath) {
 
     this.deleteRecord = function(id, callback) {
         let recordsString = "";
-        const refactoredRecords = this.readAllRecords(this.filePath).filter(record => {
+        const refactoredRecords = this.readAllRecordsSync(this.filePath).filter(record => {
             if (record[id.key] !== id.value) {
                 recordsString += `${JSON.stringify(record)}\n`;
             }
