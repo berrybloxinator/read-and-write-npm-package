@@ -109,7 +109,7 @@ function ReadAndWrite(filePath) {
         return refactoredRecords;
     };
 
-    this.editRecordSync = function(id, recordIdArray, callback) {
+    this.editRecord = function(id, recordIdArray, callback) {
         let recordsString = "";
         const refactoredRecords = this.readAllRecords(this.filePath).map(record => {
             if (record[id.key] === id.value) {
