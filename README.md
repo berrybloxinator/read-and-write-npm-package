@@ -14,10 +14,12 @@ const fileReader = new ReadAndWrite("./users.txt");
 
 # Reading From A File
 
+## Synchronously
+
 The following line reads all records from the file
 
 ```
-let users = fileReader.readAllRecords();
+let users = fileReader.readAllRecordsSync();
 ```
 
 It should return an array of objects, each object representing one record
@@ -44,15 +46,29 @@ Example:
     timeCreated: '1/28/2020, 2:34:18 PM'
   }
 ]
+```
 
+## Asynchronously
+
+To use this function asynchronously you have the option pass a callback that will be called when all the files contents have been read
+
+The readAllRecords function will call your callback with the file contents formatted as an array of objects just like with the readAllRecordsSync function
+
+```
+let users = [];
+fileReader.readAllRecords(fileContents => {
+    users = fileContents;
+});
 ```
 
 # Appending Records
 
+## Synchronously
+
 To append records pass in an array of objects
 
 ```
-const users = [];
+let users = [];
 const d = new Date();
 const tempUsers = [
     {
@@ -74,7 +90,7 @@ const tempUsers = [
         timeCreated: d.toLocaleString()
     }
 ];
-fileReader.appendRecords(tempUsers);
+fileReader.appendRecordsSync(tempUsers);
 ```
 
 Append records does not return anything so in this case I have to manually add the appended users to my array
@@ -85,12 +101,14 @@ users.push(...tempUsers);
 
 Appending records will not overwrite the file, only add to the end of it.
 
-# Writing Records
+## Asynchronously
 
-Writing records is done almost the exact same way except for the fact that the file is overwritten
+If you do this function asynchronously you have the option of passing in a callback that will do whatever you want it to whenever the function has appended the user(s)
+
+This callback is not called with any parameters
 
 ```
-const users = [];
+let users = [];
 const d = new Date();
 const tempUsers = [
     {
@@ -112,19 +130,91 @@ const tempUsers = [
         timeCreated: d.toLocaleString()
     }
 ];
-fileReader.writeRecords(tempUsers);
+fileReader.appendRecords(tempUsers, () => {
+    console.log("user successfully appended to file");
+});
+users.push(...tempUsers);
+```
+
+# Writing Records
+
+## Synchronously
+
+Writing records is done almost the exact same way except for the fact that the file is overwritten
+
+```
+let users = [];
+const d = new Date();
+const tempUsers = [
+    {
+        username: "Destiny",
+        firstName: "Steven",
+        lastName: "Bonnell",
+        email: "destiny@gmail.com",
+        age: 32,
+        userId: uuid.v4(),
+        timeCreated: d.toLocaleString()
+    },
+    {
+        username: "xXhardcore_gamerXx",
+        firstName: "Doug",
+        lastName: "Smith",
+        email: "league4life@gmail.com",
+        age: 29,
+        userId: uuid.v4(),
+        timeCreated: d.toLocaleString()
+    }
+];
+fileReader.writeRecordsSync(tempUsers);
+users = tempUsers;
+```
+
+## Asynchronously
+
+Just like the asynchronous version of appendUsers you can pass in a callback that will do whatever you want when the users are written to the file
+
+This callback is not called with any parameters
+
+```
+let users = [];
+const d = new Date();
+const tempUsers = [
+    {
+        username: "Destiny",
+        firstName: "Steven",
+        lastName: "Bonnell",
+        email: "destiny@gmail.com",
+        age: 32,
+        userId: uuid.v4(),
+        timeCreated: d.toLocaleString()
+    },
+    {
+        username: "xXhardcore_gamerXx",
+        firstName: "Doug",
+        lastName: "Smith",
+        email: "league4life@gmail.com",
+        age: 29,
+        userId: uuid.v4(),
+        timeCreated: d.toLocaleString()
+    }
+];
+fileReader.writeRecords(tempUsers, () => {
+    console.log("Users successfully written to file");
+});
 users = tempUsers;
 ```
 
 # Deleting Records
+
+## Synchronously
 
 To delete a record you have to pass in an id
 
 An id is an object that is used to identify the record that you want to be deleted
 
 ```
-const users = [];
-users = fileReader.deleteRecord({
+let users = [];
+users = fileReader.deleteRecordSync({
     key: "name",
     value: "Brady"
 });
@@ -136,7 +226,23 @@ This will find the record with the key and value that you pass in
 
 It will remove it from the file and return an array with all of of the records except the one that was deleted
 
+## Asynchronously
+
+Keep in mind that for deleteRecord your callback will be called with an updated array of your records
+
+```
+let users = [];
+fileReader.deleteRecord({
+    key: "name",
+    value: "Brady"
+}, refactoredUsers => {
+    users = refactoredUsers;
+});
+```
+
 # Editing Records
+
+## Synchronously
 
 This is the most complicated function in this package
 
@@ -147,7 +253,8 @@ The second parameter is an array of id's to tell the function which parts of the
 The second parameter is where you specify the key and then specify what value you want the keys value to change to
 
 ```
-users = fileReader.editRecord({
+let users = [];
+users = fileReader.editRecordSync({
     key: "userId",
     value: 3ef6972e-6c71-4fd2-82df-da4c2dc9baf5
 }, [
@@ -189,10 +296,38 @@ to
 }
 ```
 
-The edit record function will return an array with all of the records including the edited record
+The editRecordSync function will return an array with all of the records including the edited record
+
+## Asynchronously
+
+Your callback will again be called with an updated array of your records
+
+```
+let users = [];
+fileReader.editRecord({
+    key: "userId",
+    value: 3ef6972e-6c71-4fd2-82df-da4c2dc9baf5
+}, [
+    {
+        key: "username",
+        value: "AnthonyPadilla"
+    }, {
+        key: "email",
+        value: "anthony.padilla@gmail.com"
+    }
+], refactoredUsers => {
+    users = refactoredUsers;
+});
+```
 
 ## Notes
 
-Reading from and writing to files is always done synchronously in this package
+The records that you write to a file can have any amount of key value pairs and you can have whatever keys and values you wish
 
-I might see if I can do a version to choose between synchronous and asynchronous
+The callback is optional for every asynchronous version of all functions
+
+Synchronous functions will always end with Sync and asynchronous functions will not
+
+> readAllRecordsSync (synchronous)
+
+> readAllRecords (asynchronous)

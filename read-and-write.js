@@ -9,7 +9,7 @@ function ReadAndWrite(filePath) {
         return records.map(record => JSON.parse(record));
     };
 
-    this.readAllRecords = function(callback) {
+    this.readAllRecords = function(callback = () => {}) {
         fs.readFile(this.filePath, "utf-8", (err, content) => {
             if (err) {
                 console.log(`Error ${err}`);
@@ -29,7 +29,7 @@ function ReadAndWrite(filePath) {
         fs.appendFileSync(this.filePath, recordsString);
     };
 
-    this.appendRecords = function(records, callback) {
+    this.appendRecords = function(records, callback = () => {}) {
         let recordsString = "";
         for (let record of records) {
             recordsString += `${JSON.stringify(record)}\n`;
@@ -51,7 +51,7 @@ function ReadAndWrite(filePath) {
         fs.writeFileSync(this.filePath, recordsString);
     };
 
-    this.writeRecords = function(records, callback) {
+    this.writeRecords = function(records, callback = () => {}) {
         let recordsString = "";
         for (let record of records) {
             recordsString += `${JSON.stringify(record)}\n`;
@@ -77,7 +77,7 @@ function ReadAndWrite(filePath) {
         return refactoredRecords;
     };
 
-    this.deleteRecord = function(id, callback) {
+    this.deleteRecord = function(id, callback = () => {}) {
         let recordsString = "";
         this.readAllRecords(fileContents => {
             const refactoredRecords = fileContents.filter(record => {
@@ -111,7 +111,7 @@ function ReadAndWrite(filePath) {
         return refactoredRecords;
     };
 
-    this.editRecord = function(id, recordIdArray, callback) {
+    this.editRecord = function(id, recordIdArray, callback = () => {}) {
         let recordsString = "";
         this.readAllRecords(fileContents => {
             const refactoredRecords = fileContents.map(record => {
