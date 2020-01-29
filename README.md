@@ -113,7 +113,7 @@ const tempUsers = [
     }
 ];
 fileReader.writeRecords(users);
-users = tempUsers
+users = tempUsers;
 ```
 
 # Deleting Records
