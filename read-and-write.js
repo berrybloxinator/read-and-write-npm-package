@@ -14,7 +14,8 @@ function ReadAndWrite(filePath) {
             if (err) {
                 console.log(`Error ${err}`);
             } else {
-                const fileContents = content.split("\n").slice(0, content.length - 1).map(record => JSON.parse(record));
+                content = content.split("\n");
+                const fileContents = content.slice(0, content.length - 1).map(record => JSON.parse(record));
                 callback(fileContents);
             }
         });
