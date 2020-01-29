@@ -3,13 +3,24 @@ const fs = require("fs");
 function ReadAndWrite(filePath) {
     this.filePath = filePath;
 
-    this.readAllRecords = function() {
+    this.readAllRecordsSync = function() {
         const content = fs.readFileSync(this.filePath, "utf-8").split("\n");
         const records = content.slice(0, content.length - 1);
         return records.map(record => JSON.parse(record));
     };
 
-    this.appendRecords = function(records) {
+    this.readAllRecords = function(callback) {
+        fs.readFile(this.filePath, "utf-8", (err, content) => {
+            if (err) {
+                console.log(`Error ${err}`);
+            } else {
+                const fileContents = content.split("\n").slice(0, content.length - 1).map(record => JSON.parse(record));
+                callback(fileContents);
+            }
+        });
+    };
+
+    this.appendRecordsSync = function(records) {
         let recordsString = "";
         for (let record of records) {
             recordsString += `${JSON.stringify(record)}\n`;
@@ -17,7 +28,21 @@ function ReadAndWrite(filePath) {
         fs.appendFileSync(this.filePath, recordsString);
     };
 
-    this.writeRecords = function(records) {
+    this.appendRecords = function(records, callback) {
+        let recordsString = "";
+        for (let record of records) {
+            recordsString += `${JSON.stringify(record)}\n`;
+        }
+        fs.appendFile(this.filePath, recordsString, err => {
+            if (err) {
+                console.log(`Error ${err}`);
+            } else {
+                callback();
+            }
+        });
+    };
+
+    this.writeRecordsSync = function(records) {
         let recordsString = "";
         for (let record of records) {
             recordsString += `${JSON.stringify(record)}\n`;
@@ -25,7 +50,21 @@ function ReadAndWrite(filePath) {
         fs.writeFileSync(this.filePath, recordsString);
     };
 
-    this.deleteRecord = function(id) {
+    this.writeRecords = function(records, callback) {
+        let recordsString = "";
+        for (let record of records) {
+            recordsString += `${JSON.stringify(record)}\n`;
+        }
+        fs.writeFile(this.filePath, recordsString, err => {
+            if (err) {
+                console.log(`Error ${err}`);
+            } else {
+                callback();
+            }
+        });
+    };
+
+    this.deleteRecordSync = function(id) {
         let recordsString = "";
         const refactoredRecords = this.readAllRecords(this.filePath).filter(record => {
             if (record[id.key] !== id.value) {
@@ -37,7 +76,24 @@ function ReadAndWrite(filePath) {
         return refactoredRecords;
     };
 
-    this.editRecord = function(id, recordIdArray) {
+    this.deleteRecord = function(id, callback) {
+        let recordsString = "";
+        const refactoredRecords = this.readAllRecords(this.filePath).filter(record => {
+            if (record[id.key] !== id.value) {
+                recordsString += `${JSON.stringify(record)}\n`;
+            }
+            return record[id.key] !== id.value
+        });
+        fs.writeFile(this.filePath, recordsString, err => {
+            if (err) {
+                console.log(`Error ${err}`);
+            } else {
+                callback(refactoredRecords);
+            }
+        });
+    };
+
+    this.editRecordSync = function(id, recordIdArray, callback) {
         let recordsString = "";
         const refactoredRecords = this.readAllRecords(this.filePath).map(record => {
             if (record[id.key] === id.value) {
@@ -51,6 +107,27 @@ function ReadAndWrite(filePath) {
         });
         fs.writeFileSync(this.filePath, recordsString);
         return refactoredRecords;
+    };
+
+    this.editRecordSync = function(id, recordIdArray, callback) {
+        let recordsString = "";
+        const refactoredRecords = this.readAllRecords(this.filePath).map(record => {
+            if (record[id.key] === id.value) {
+                for (let recordId of recordIdArray) {
+                    record[recordId.key] = recordId.value;
+                }
+            }
+
+            recordsString += `${JSON.stringify(record)}\n`;
+            return record;
+        });
+        fs.writeFile(this.filePath, recordsString, err => {
+            if (err) {
+                console.log(`Error ${err}`);
+            } else {
+                callback(refactoredRecords);
+            }
+        });
     };
 }
 

@@ -74,7 +74,7 @@ const tempUsers = [
         timeCreated: d.toLocaleString()
     }
 ];
-fileReader.appendRecords(users);
+fileReader.appendRecords(tempUsers);
 ```
 
 Append records does not return anything so in this case I have to manually add the appended users to my array
@@ -112,7 +112,7 @@ const tempUsers = [
         timeCreated: d.toLocaleString()
     }
 ];
-fileReader.writeRecords(users);
+fileReader.writeRecords(tempUsers);
 users = tempUsers;
 ```
 
